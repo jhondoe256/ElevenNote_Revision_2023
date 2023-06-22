@@ -22,4 +22,6 @@ public class UserEntity
 
     [Required]
     public DateTime DateCreated { get; set; }
+
+    public List<NoteEntity> Notes { get; set; }
 }

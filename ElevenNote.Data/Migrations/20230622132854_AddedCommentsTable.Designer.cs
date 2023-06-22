@@ -4,6 +4,7 @@ using ElevenNote.Data.AppContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ElevenNote.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230622132854_AddedCommentsTable")]
+    partial class AddedCommentsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,24 +24,6 @@ namespace ElevenNote.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ElevenNote.Data.CategoryEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CategoryTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
 
             modelBuilder.Entity("ElevenNote.Data.NoteEntity", b =>
                 {
@@ -48,9 +33,6 @@ namespace ElevenNote.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasMaxLength(8000)
@@ -58,9 +40,6 @@ namespace ElevenNote.Data.Migrations
 
                     b.Property<DateTimeOffset>("CreatedUtc")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("IsStarred")
-                        .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("ModifiedUtc")
                         .HasColumnType("datetimeoffset");
@@ -74,8 +53,6 @@ namespace ElevenNote.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("OwnerId");
 
@@ -118,24 +95,13 @@ namespace ElevenNote.Data.Migrations
 
             modelBuilder.Entity("ElevenNote.Data.NoteEntity", b =>
                 {
-                    b.HasOne("ElevenNote.Data.CategoryEntity", "Category")
-                        .WithMany("Notes")
-                        .HasForeignKey("CategoryId");
-
                     b.HasOne("ElevenNote.Data.UserEntity", "Owner")
                         .WithMany("Notes")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("ElevenNote.Data.CategoryEntity", b =>
-                {
-                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("ElevenNote.Data.UserEntity", b =>
